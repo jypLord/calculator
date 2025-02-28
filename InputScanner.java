@@ -1,50 +1,83 @@
-import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class InputScanner {
     private int firstNumber;
     private char operator;
     private int secondNumber;
 
+    private static String translateInputWord ;
 
     public void userInput() {
-        System.out.println("수식을 입력 후 엔터를 눌러주세요. ");
+        System.out.println("Write math expression and press Enter\n     " +
+                "Command" + "\n" +
+                "exit: close calculator\n" +
+                "results: call calcuted list\n" +
+                "delete: delete the frontest result");
+
         Scanner scanner = new Scanner(System.in);
 
         Calculator calculator = new Calculator(firstNumber,operator,secondNumber);
 
         while (true) {
             try{
-                firstNumber = scanner.nextInt();
-                operator = scanner.next().charAt(0);
-                secondNumber = scanner.nextInt();
+                translateInputWord = scanner.nextLine();
 
-                calculator.setA(firstNumber);
-                calculator.setOperator(operator);
-                calculator.setB(secondNumber);
+                //숫자 판별 정규식
+                Pattern NumberFinder = Pattern.compile("\\d+");
 
-                calculator.calculating();
+                Matcher NumberMatcher = NumberFinder.matcher(translateInputWord);
+                NumberMatcher.find();
+                this.firstNumber = Integer.parseInt(NumberMatcher.group());
+                NumberMatcher.find();
+                this.secondNumber = Integer.parseInt(NumberMatcher.group());
 
-            } catch (InputMismatchException inputError) {
-                String exitCatcher = scanner.next();
+                //연산자 판별 정규식
+                Pattern operatorFinder = Pattern.compile("\\W");
+                Matcher operatorMacher = operatorFinder.matcher(translateInputWord);
+                operatorMacher.find();
+                this.operator = operatorMacher.group().charAt(0);
 
-                if(exitCatcher.equals("exit")){
+
+                calculator.setA(this.firstNumber);
+                calculator.setOperator(this.operator);
+                calculator.setB(this.secondNumber);
+
+                long calulateResult = calculator.calculating();
+                System.out.println(calulateResult);
+
+                calculator.saveResult(calulateResult);
+
+
+            }catch (IllegalStateException inputError) {
+                //String comandCatcher = scanner.nextLine();
+                if(translateInputWord.equals("exit")) {
                     break;
+                }else if(translateInputWord.equals("delete")){
+                    calculator.deleteResult();
+                }else if(translateInputWord.equals("results")){
+                        System.out.println(calculator.getResult());
                 }else {
-                    System.out.println("유효하지 않은 입력 형식입니다.");
-
+                    System.out.println("invalid format!");
                 }
-            }  catch (ArithmeticException divideError) {
+            }catch (ArithmeticException divideError) {
                 if (secondNumber == 0) {
-                    System.out.println("0으로 나눌 수 없습니다.");
+                    System.out.println("Can't divide to 0"); //
                 } else {
-                    System.out.println("유효하지 않은 입력 형식입니다.");
+                    System.out.println("invalid format!");
                 }
+            }catch (IllegalArgumentException iDontKnowThat) {
+                System.out.println("invalid operation");
 
-            }   catch (IllegalArgumentException iDontKnowThat) {
-                    System.out.println("그런 기능이 없습니다");
+            }catch (IndexOutOfBoundsException getResultError) {
+                System.out.println("There's no result");
+
+            }catch (NoSuchElementException deleteError) {
+                System.out.println("There's no result");
             }
         }
-
     }
 }
