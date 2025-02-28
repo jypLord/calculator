@@ -69,20 +69,11 @@ public class Calculator {
     }
 
     public ArrayList<Long> getResult(){
-        if(result.isEmpty()){
-            throw new IndexOutOfBoundsException();
-        }else {
+        /*if(result.isEmpty()){
+            System.out.println(
+        }else {*/
             return result;
-        }
     }
-
-        /*
-        try {
-
-        } catch (IndexOutOfBoundsException getResultError) {
-            System.out.println("There's no result");
-        }
-    } */
 
     public void deleteResult(){
         try{
