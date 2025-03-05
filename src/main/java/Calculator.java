@@ -2,84 +2,70 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public class Calculator {
-    private int a;
-    private int b;
-    private char operator;
+    private static final ArrayList<Long> calculateResults = new ArrayList<>();
 
-    public Calculator(int a, char operator, int b) {
-        this.a = a;
-        this.operator = operator;
-        this.b = b;
+    public void calculate(String[] inputOperators,String[] inputNumbers ){
+        long[] inputLong = new long[inputNumbers.length];
+
+        for(int j=0; j<inputNumbers.length; j++){
+            inputLong[j] = Long.parseLong(inputNumbers[j]);
+        }
+
+        for(int i=0; i<inputOperators.length; i++){
+
+            switch (inputOperators[i]) {
+                case "+" -> {
+                    long result = add(inputLong[i], inputLong[i + 1]);
+                    inputLong[i + 1] = result;
+                }
+
+                case "-" -> {
+                    long result = subtract(inputLong[i], inputLong[i + 1]);
+                    inputLong[i + 1] = result;
+                }
+                case "*" -> {
+                    long result = multiply(inputLong[i], inputLong[i + 1]);
+                    inputLong[i + 1] = result;
+                }
+                case "/" -> {
+                    long result = divide(inputLong[i], inputLong[i + 1]);
+                    inputLong[i + 1] = result;
+                }
+            }
+
+        }
+        calculateResults.add(inputLong[inputLong.length-1]);
+        System.out.println(inputLong[inputLong.length-1]);
+    }
+    public long add(long inputLong1, long inputLong2) {
+        return  inputLong1+ inputLong2;
     }
 
-    public void setA(int a) {
-        this.a = a;
+    public long subtract(long inputLong1, long inputLong2) {
+        return  inputLong1 - inputLong2;
     }
 
-    public void setB(int b) {
-        this.b = b;
+    public long multiply(long inputLong1, long inputLong2) {
+        return  inputLong1 * inputLong2;
     }
 
-    public void setOperator(char operator) {
-        this.operator = operator;
-    }
-
-
-    public long calculating() {
-
-        long calculateResult = switch (operator) {
-
-            case '+' -> add();
-
-            case '-' -> subtract();
-
-            case '/' -> divide();
-
-            case '*' -> multiply();
-
-            default -> throw new IllegalArgumentException();
-        };
-        return (calculateResult);
-    }
-
-    public int add() {
-        return this.a + this.b;
-    }
-
-    public int subtract() {
-        return this.a - this.b;
-    }
-
-    public int multiply() {
-        return this.a * this.b;
-    }
-
-    public int divide() {
-        if (this.b == 0) {
-            throw new ArithmeticException();
+    public long divide(long inputLong1, long inputLong2) {
+        if (inputLong2 == 0) {
+            throw new ArithmeticException("Can't divide to 0");
         } else {
-            return this.a / this.b;
+            return  inputLong1/inputLong2;
         }
     }
 
-    private ArrayList<Long> result = new ArrayList<>();
-
-    public void saveResult(long calculateResult) {
-        result.add(calculateResult);
+    public static ArrayList<Long> getResult() {
+        return calculateResults;
     }
 
-    public ArrayList<Long> getResult(){
-        /*if(result.isEmpty()){
-            System.out.println(
-        }else {*/
-            return result;
-    }
-
-    public void deleteResult(){
-        try{
-            result.removeFirst();
+    public static void deleteResult() {
+        try {
+            calculateResults.removeFirst();
             System.out.println("delete complete");
-        }catch (NoSuchElementException deleteErrer){
+        } catch (NoSuchElementException deleteError) {
             System.out.println("There's no result");
         }
     }
