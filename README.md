@@ -12,7 +12,7 @@
 
 - Main
  
-InputScanner.Class의 유일한 메서드의 실행만 합니다.
+  InputScanner.Class의 유일한 메서드의 실행만 합니다.
 
 - InputScanner
 
