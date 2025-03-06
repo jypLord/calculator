@@ -11,6 +11,7 @@ public class Main {
         System.out.println(textBlock);
 
         InputScanner run = new InputScanner();
+
         run.userInput();
 
     }
